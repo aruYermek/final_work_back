@@ -17,13 +17,22 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  county: {
+  country: {
+    type: String,
+    required: true
+  },
+  gender: {
     type: String,
     required: true
   },
   password: {
     type: String,
     required: true
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  
   },
   date: {
     type: Date,
