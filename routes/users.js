@@ -5,12 +5,13 @@ const passport = require('passport')
 
 //User model
 const User = require('../models/User');
-const { forwardAuthenticated } = require('../config/auth');
+
 
 //Login page
 router.get('/login', (req, res) => res.render('login'));
 //Register page
 router.get('/register', (req, res) => res.render('register'));
+router.get('/admin', (req,res) => res.render('admin'));
 
 
 //Register Handle
@@ -112,6 +113,7 @@ router.post('/login', (req, res, next) => {
     });
    
   });
+
 
 
         module.exports = router;
