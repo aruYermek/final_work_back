@@ -1,13 +1,72 @@
+body{
+    background-color: white;
+}
+/* home page */
+.slogan{
+    font-family:'Times New Roman', Times, serif;
+    font-size: 24px;
+    margin: auto
+}
+.home-photo{
+    height: 500px;
+}
+
+.card{
+    margin: 3rem;
+}
+
+.homepage-header{
+    display: flex;
+    justify-content: space-between;
+}
+.lead{
+    text-align: center;
+    margin: 20px;
+}
+.logout-btn{
+    background-color: white;
+    border: 2px solid #d9e3f1; 
+    margin: 20px;
+}
+/* about us page */
+
+
+.about-us-photo{
+    height: 500px;
+}
+.about-us-content{
+    font-size: 24px;
+    font-family: 'Times New Roman', Times, serif;
+    margin: auto;
+}
+.about-us-content>h1{
+    font-style: italic;
+    text-align: center;
+}
+
+
+
+/* register-login */
 .card{
     background-color: white;
 }
-.btn {
+.register-btn {
     background-color: white;
     border: 8px solid #d9e3f1; 
-}
-.register-btn {
     margin-top: 20px;
 }
 .login-btn{
+    background-color: white;
+    border: 8px solid #d9e3f1; 
     margin-top: 20px;
+}
+
+/* cards in news */
+.flowers-card{
+    display: flex;
+} 
+/* footer */
+.footer {
+    margin: 4rem;
+    text-align: center;
 }

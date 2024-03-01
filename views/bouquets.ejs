@@ -1,0 +1,37 @@
+<!-- bouquets.ejs -->
+  <style>
+    /* Additional styling */
+    .flower-card {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      list-style: none;
+      padding: 0;
+    }
+    .flower-card .card {
+      margin-bottom: 20px;
+      width: calc(33.333% - 20px); /* 3 cards per row */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mt-5 mb-4">All Bouquets</h1>
+    <ul class="flower-card">
+      <% bouquets.forEach(bouquet => { %>
+        <li class="card">
+            <img src="..\<%= bouquet.flowerImage %>" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title"><%= bouquet.flowerName %></h5>
+            <p class="card-text"><%= bouquet.flowerPrice %> tg</p>
+            <p class="card-text"><small class="text-body-secondary"><%= bouquet.createdDate %></small></p>
+            <div class="update button">
+              <a href='/admin/update/<%= bouquet._id %>' class="btn btn-dark">Update</a>
+              <a href='/admin/delete/<%= bouquet._id %>' class="btn btn-danger">Delete</a>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+</body>
+</html>

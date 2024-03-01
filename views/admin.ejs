@@ -1,4 +1,15 @@
-<h1 class="mt-4">Dashboard</h1>
-
-<p class="lead mb-3">You are an admin! <%= user.firstName %>  <%= user.lastName %>!</p>
+<h1 class="mt-4" style="text-align: center;">Admin Page</h1>
+<p class="lead mb-3">You are admin: <%= user.firstName %>  <%= user.lastName %>!</p>
+<div class="row mt-5">
+    <div class="col-md-6 m-auto">
+      <div class="card card-body text-center">
+        <p>Settings</p>
+        <a href="/admin/add" class="btn btn-primary btn-block mb-2"
+          >Add a new bouquet</a
+        >
+        <a href="/admin/update" class="btn btn-secondary btn-block">Update a bouquet</a>
+        <a href="/admin/delete" class="btn btn-secondary btn-block">Delete a bouquet</a>
+      </div>
+    </div>
+  </div>
 <a href="/users/logout" class="btn btn-secondary">Logout</a>

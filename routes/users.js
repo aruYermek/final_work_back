@@ -1,22 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const passport = require('passport')
+const passport = require('passport');
+const nodemailer = require('nodemailer');
+const readline = require('readline');
 
-//User model
+// Модели
 const User = require('../models/User');
+const Flowers = require('../models/Flowers');
 
-
-//Login page
+// Страницы
 router.get('/login', (req, res) => res.render('login'));
-//Register page
 router.get('/register', (req, res) => res.render('register'));
-router.get('/admin', (req,res) => res.render('admin'));
+router.get('/admin', (req, res) => res.render('admin'));
 
-
-//Register Handle
-router.post('/register', (req, res) => {
-    console.log(req.body);
+// Регистрация пользователя
+router.post('/register', async (req, res) => {
     const { firstName, lastName, email, age, country, gender, password, password2 } = req.body;
     let errors = [];
 
@@ -24,7 +23,7 @@ router.post('/register', (req, res) => {
         errors.push({ msg: 'Please enter all fields' });
     }
 
-    if (password != password2) {
+    if (password !== password2) {
         errors.push({ msg: 'Passwords do not match' });
     }
 
@@ -45,7 +44,8 @@ router.post('/register', (req, res) => {
             password2
         });
     } else {
-        User.findOne({ email: email }).then(user => {
+        try {
+            const user = await User.findOne({ email: email });
             if (user) {
                 errors.push({ msg: 'Email already exists' });
                 res.render('register', {
@@ -69,51 +69,95 @@ router.post('/register', (req, res) => {
                     gender,
                     password
                 });
-                console.log(newUser);
-               
-
-                    bcrypt.genSalt(10, (err, salt) => {
-                      bcrypt.hash(newUser.password, salt, (err, hash) => {
-                        if (err) throw err;
-                        newUser.password = hash;
-                        newUser
-                          .save()
-                          .then(user => {
-                            req.flash(
-                              'success_msg',
-                              'You are successfully registered! Please log in'
-                            );
-                            res.redirect('/users/login');
-                          })
-                          .catch(err => console.log(err));
-                      });
-                    });
+                const salt = await bcrypt.genSalt(10);
+                const hash = await bcrypt.hash(newUser.password, salt);
+                newUser.password = hash;
+                await newUser.save();
+                req.flash(
+                    'success_msg',
+                    'You are successfully registered! Please log in'
+                );
+                const subject = 'You are successfully registered!';
+                const text = 'You have successfully registered on our website. Thank you for registering!';
+                sendEmail(newUser.email, subject, text);
+                res.redirect('/users/login');
             }
-
-
-        });
+        } catch (err) {
+            console.error(err);
+            res.status(500).send('Server Error');
+        }
     }
 });
 
-// Login
+// Аутентификация пользователя
 router.post('/login', (req, res, next) => {
     passport.authenticate('local', {
-      successRedirect: '/dashboard',
-      failureRedirect: '/users/login',
-      failureFlash: true
+        successRedirect: '/dashboard',
+        failureRedirect: '/users/login',
+        failureFlash: true
     })(req, res, next);
-  });
-  
-  // Logout;
-  router.get("/logout", (req, res, next) => {
+});
+
+// Выход пользователя
+router.get("/logout", (req, res, next) => {
     req.logout(req.user, err => {
-      if(err) return next(err);
-      req.flash('success_msg', 'You are logged out');
-      res.redirect('/users/login');
+        if (err) return next(err);
+        req.flash('success_msg', 'You are logged out');
+        res.redirect('/users/login');
     });
-   
-  });
+});
 
+// Добавление нового букета
+router.post('/admin/add', async (req, res) => {
+    const { name, price } = req.body; // Получаем данные из формы
 
+    // Проверяем наличие данных
+    if (!name || !price) {
+        return res.status(400).send('Please enter all fields');
+    }
 
-        module.exports = router;
+    // Создаем новый объект букета
+    const newFlower = new Flowers({
+        flowerName: name,
+        flowerPrice: price
+    });
+
+    // Сохраняем объект букета в базе данных
+    try {
+        await newFlower.save();
+        req.flash('success_msg', 'Bouquet added successfully');
+        res.redirect('/dashboard'); // Перенаправляем пользователя на страницу дашборда после успешного добавления
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+// Конфигурация почты
+const transporter = nodemailer.createTransport({
+    service: 'mail.ru',
+    auth: {
+        user: 'mailsender.test@mail.ru',
+        pass: 'A3jnKPFNegyTqwMspSAU'
+    }
+});
+
+// Функция отправки электронной почты
+function sendEmail(recipient, subject, text) {
+    const mailOptions = {
+        from: 'mailsender.test@mail.ru',
+        to: recipient,
+        subject: subject,
+        text: text
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log('Error occurred:', error);
+        } else {
+            console.log('Email sent:', info.response);
+        }
+    });
+}
+
+module.exports = router;

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <style>
+        #about-us-container {
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            
+        }
+
+        .about-us-content {
+            background-color: rgba(255, 255, 255, 0.8); 
+            padding: 50px; 
+            text-align: center; 
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body onload="changeBackground()">
+<div class="container-fluid" id="about-us-container">
+    <div id="about-us" class="about-us row">
+        <div class="col-lg-12">
+            <div class="about-us-content">
+                <h1>ABOUT US</h1>
+                <br>
+                <p>At Floral Whispers, we're more than just a flower shop; we're your partners in celebrating life's special moments. With a passion for perfection and a love for all things floral, we dedicate ourselves to creating handcrafted bouquets that embody nature's elegance.</p>
+                <br>
+                <p>Our journey began with a single bloom, a whisper of nature's beauty, and a desire to share it with the world. Founded by Aruzhan Yermek in 2018, Floral Whispers started as a dream nurtured in the heart of Astana. Over the years, we've grown, learned, and bloomed alongside the flowers we adore.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function changeBackground() {
+        const flowers = ["rose", "tulip", "daisy", "lily", "sunflower"]; // Массив названий цветов
+        const randomFlower = flowers[Math.floor(Math.random() * flowers.length)]; // Случайный цветок из массива
+        try {
+            const response = await fetch(`https://api.unsplash.com/photos/random?query=${randomFlower}&client_id=YwjGAO4PeRMF2VMfAOYLZC7OBXvctpQ3q77GNV2-7O8`);
+            const data = await response.json();
+            document.getElementById('about-us-container').style.backgroundImage = `url(${data.urls.regular})`;
+        } catch (error) {
+            console.error('Ошибка при загрузке изображения:', error);
+        }
+    }
+</script>
+</body>
+</html>
