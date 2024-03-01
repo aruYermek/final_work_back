@@ -5,7 +5,6 @@ const Flowers = require('../models/Flowers');
 const multer = require('multer');
 const fs = require('fs');
 
-
 // Welcome Page
 router.get('/', forwardAuthenticated, (req, res) => res.render('welcome'));
 
